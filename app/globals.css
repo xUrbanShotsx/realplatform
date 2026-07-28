@@ -1,0 +1,141 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Design tokens — light theme ─── */
+:root {
+  --bg:               #ffffff;
+  --bg-secondary:     #f8fafc;
+  --bg-hover:         #f1f5f9;
+  --bg-active:        #e2e8f0;
+  --bg-canvas:        #f4f6f9;
+  --border:           #e2e8f0;
+  --border-strong:    #cbd5e1;
+  --border-hover:     #94a3b8;
+  --text:             #0f172a;
+  --text-secondary:   #475569;
+  --text-tertiary:    #64748b;
+  --text-muted:       #94a3b8;
+  --text-placeholder: #cbd5e1;
+  --badge-blue-bg:    #dbeafe;
+  --badge-blue-text:  #1e40af;
+  --badge-yellow-bg:  #fef9c3;
+  --badge-yellow-text:#854d0e;
+  --badge-green-bg:   #dcfce7;
+  --badge-green-text: #166534;
+  --badge-red-bg:     #fee2e2;
+  --badge-red-text:   #991b1b;
+  --badge-purple-bg:  #ede9fe;
+  --badge-purple-text:#5b21b6;
+  --badge-orange-bg:  #fed7aa;
+  --badge-orange-text:#9a3412;
+  --accent:           #FFD940;
+  --accent-bg:        #FFD940;
+  --accent-border:    #e8c200;
+  --accent-bg-hover:  #ffe55a;
+  --accent-border-hover:#d4b000;
+  --accent-text:      #000000;
+  --logo-fill:        #0f172a;
+  --logo-bolt:        #f8fafc;
+  --status-bg:        #f8fafc;
+  --status-border:    #e2e8f0;
+  --status-text:      #64748b;
+}
+
+.dark {
+  --bg:               #ffffff;
+  --bg-secondary:     #f8fafc;
+  --bg-hover:         #f1f5f9;
+  --bg-active:        #e2e8f0;
+  --bg-canvas:        #f4f6f9;
+  --border:           #e2e8f0;
+  --border-strong:    #cbd5e1;
+  --border-hover:     #94a3b8;
+  --text:             #0f172a;
+  --text-secondary:   #475569;
+  --text-tertiary:    #64748b;
+  --text-muted:       #94a3b8;
+  --text-placeholder: #cbd5e1;
+  --badge-blue-bg:    #dbeafe;
+  --badge-blue-text:  #1e40af;
+  --badge-yellow-bg:  #fef9c3;
+  --badge-yellow-text:#854d0e;
+  --badge-green-bg:   #dcfce7;
+  --badge-green-text: #166534;
+  --badge-red-bg:     #fee2e2;
+  --badge-red-text:   #991b1b;
+  --badge-purple-bg:  #ede9fe;
+  --badge-purple-text:#5b21b6;
+  --badge-orange-bg:  #fed7aa;
+  --badge-orange-text:#9a3412;
+  --accent:           #FFD940;
+  --accent-bg:        #FFD940;
+  --accent-border:    #e8c200;
+  --accent-bg-hover:  #ffe55a;
+  --accent-border-hover:#d4b000;
+  --accent-text:      #000000;
+  --logo-fill:        #0f172a;
+  --logo-bolt:        #f8fafc;
+  --status-bg:        #f8fafc;
+  --status-border:    #e2e8f0;
+  --status-text:      #64748b;
+}
+
+/* ─── Base ─── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg-canvas);
+  color: var(--text);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  font-feature-settings: 'kern' 1, 'liga' 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: -0.01em;
+}
+
+/* ─── Transitions ─── */
+a, button {
+  transition: background 150ms ease, color 150ms ease, opacity 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+}
+
+/* ─── Tabular nums for data ─── */
+.tabular-nums,
+[data-numeric] {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-strong); }
+::-webkit-scrollbar-thumb:hover { background: var(--border-hover); }
+
+/* ─── Interactive card lift ─── */
+.card-hover {
+  transition: box-shadow 150ms ease, transform 150ms ease;
+}
+.card-hover:hover {
+  box-shadow: 0 4px 16px rgba(15,23,42,0.08);
+  transform: translateY(-1px);
+}
+
+/* ─── Focus ring ─── */
+*:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ─── Reduced motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
