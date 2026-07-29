@@ -4,7 +4,7 @@ import { useState } from 'react'
 import {
   Phone, Mail, MessageSquare, Brain, MoreHorizontal,
   ArrowLeft, ArrowRight, MapPin, Home, Heart,
-  CheckCircle2, Calendar, Toggle, TrendingUp,
+  CheckCircle2, Calendar, ToggleLeft, TrendingUp,
 } from 'lucide-react'
 
 const BG_LIST   = '#232323'

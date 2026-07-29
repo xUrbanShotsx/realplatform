@@ -384,7 +384,7 @@ function AgentSidebarContent({ chats, activeChatId, onSelect, onNew, onDelete }:
             <div style={{ padding: '8px 12px 3px', fontSize: 10, fontWeight: 700, color: TEXT3, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{g.label}</div>
             {g.chats.map(c => (
               <div key={c.id} onClick={() => onSelect(c.id)}
-                style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 10px 7px 12px', cursor: 'pointer', background: activeChatId === c.id ? PINK_S : 'transparent', borderRadius: 8, margin: '1px 8px', group: 'true' as any }}
+                style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 10px 7px 12px', cursor: 'pointer', background: activeChatId === c.id ? PINK_S : 'transparent', borderRadius: 8, margin: '1px 8px' }}
                 onMouseEnter={e => { if (activeChatId !== c.id) (e.currentTarget as HTMLElement).style.background = 'rgba(0,0,0,0.03)' }}
                 onMouseLeave={e => { if (activeChatId !== c.id) (e.currentTarget as HTMLElement).style.background = 'transparent' }}
               >
@@ -729,7 +729,7 @@ function TopBar() {
   const AI_CONNECTED = 4
   const AI_TOTAL     = 13
   const AI_READY     = Math.round((AI_CONNECTED / AI_TOTAL) * 100)
-  const AI_FULL      = AI_CONNECTED === AI_TOTAL
+  const AI_FULL      = (AI_CONNECTED as number) === AI_TOTAL
 
   return (
     <div style={{ height: 46, background: '#f8fafc', borderBottom: `1px solid ${BORDER}`, display: 'flex', alignItems: 'center', padding: '0 20px', gap: 12, flexShrink: 0 }}>

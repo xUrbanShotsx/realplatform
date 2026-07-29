@@ -110,7 +110,7 @@ function PhotoUploadZone() {
   )
 }
 
-function DocUploadZone({ label, hint, icon: Icon }: { label: string; hint: string; icon: React.ComponentType<{ size?: number; color?: string; strokeWidth?: number }> }) {
+function DocUploadZone({ label, hint, icon: Icon }: { label: string; hint: string; icon: React.ElementType }) {
   const [file, setFile] = useState<{ name: string; size: string } | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 

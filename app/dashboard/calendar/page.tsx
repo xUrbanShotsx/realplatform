@@ -73,7 +73,7 @@ export default function CalendarPage() {
         <div style={{ background: '#fff', border: `1px solid ${BORDER}` }}>
           <div style={{ padding: '12px 16px', borderBottom: `1px solid ${BORDER}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <span style={{ fontSize: 12, fontWeight: 700, color: TEXT }}>Today — Sunday 27 July 2026</span>
-            <span style={{ fontSize: 10, color: TEXT3, background: `${BLUE}10`, padding: '2px 8px', fontWeight: 700, color: BLUE }}>{EVENTS.length} events</span>
+            <span style={{ fontSize: 10, background: `${BLUE}10`, padding: '2px 8px', fontWeight: 700, color: BLUE }}>{EVENTS.length} events</span>
           </div>
           {EVENTS.map((e, i) => (
             <div key={i} style={{ display: 'flex', gap: 0, borderBottom: i < EVENTS.length - 1 ? `1px solid ${BORDER2}` : 'none', cursor: 'pointer' }}>

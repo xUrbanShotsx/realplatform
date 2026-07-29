@@ -147,7 +147,7 @@ export default function ContactsPage() {
   }, [])
 
   const allSuburbs = useMemo(() =>
-    [...new Set(CONTACTS.map(c => c.suburb.replace(/^(Searching:|Investing:)\s*/i, '').trim()))].sort()
+    Array.from(new Set(CONTACTS.map(c => c.suburb.replace(/^(Searching:|Investing:)\s*/i, '').trim()))).sort()
   , [])
 
   const filtered = useMemo(() => {
