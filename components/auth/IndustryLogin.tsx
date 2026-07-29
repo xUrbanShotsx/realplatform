@@ -87,7 +87,7 @@ export function IndustryLogin({
         <div style={{ position: 'relative', zIndex: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Link href="/" style={{ textDecoration: 'none' }}>
             <span style={{ fontSize: 18, fontWeight: 900, color: '#fff', letterSpacing: '-0.3px' }}>
-              Briesa
+              Real Platform
             </span>
           </Link>
           <Link href={backHref}
@@ -111,7 +111,7 @@ export function IndustryLogin({
             ))}
           </h1>
           <p style={{ fontSize: 13, fontWeight: 400, lineHeight: 1.7, color: 'rgba(255,255,255,0.5)', marginBottom: 28 }}>
-            Sign in to access your full compliance dashboard, tailored for Australian {label.replace('Briesa ', '').toLowerCase()} businesses.
+            Sign in to your Real Platform dashboard, built for Australian real estate professionals.
           </p>
           <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
             {features.map(f => (
@@ -137,7 +137,7 @@ export function IndustryLogin({
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 40 }} className="login-mobile-header">
             <Link href="/" style={{ textDecoration: 'none' }}>
               <span style={{ fontSize: 18, fontWeight: 900, color: '#000', letterSpacing: '-0.3px' }}>
-                Briesa
+                Real Platform
               </span>
             </Link>
             <Link href={backHref} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, fontWeight: 500, letterSpacing: '0.05em', textTransform: 'uppercase', color: '#9ca3af', textDecoration: 'none' }}>
