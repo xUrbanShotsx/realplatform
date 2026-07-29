@@ -111,7 +111,7 @@ const CATEGORIES: Category[] = [
     ],
     integrations: [
       {
-        id: 'rea', name: 'realestate.com.au', short: 'REA', color: '#e34234', status: 'connected',
+        id: 'rea', name: 'realestate.com.au', short: 'REA', color: '#e34234', status: 'available',
         desc: 'Primary portal · enquiries + listings',
         aiLine: 'All enquiries auto-qualified and scored on arrival',
         flow: {
@@ -129,7 +129,7 @@ const CATEGORIES: Category[] = [
         },
       },
       {
-        id: 'domain', name: 'Domain.com.au', short: 'Domain', color: '#6e2fcc', status: 'connected',
+        id: 'domain', name: 'Domain.com.au', short: 'Domain', color: '#6e2fcc', status: 'available',
         desc: 'Secondary portal · buyers + data',
         aiLine: 'Live price benchmarking for every appraisal',
         flow: {
@@ -280,7 +280,7 @@ const CATEGORIES: Category[] = [
     ],
     integrations: [
       {
-        id: 'xero', name: 'Xero', short: 'Xero', color: '#13b5ea', status: 'connected',
+        id: 'xero', name: 'Xero', short: 'Xero', color: '#13b5ea', status: 'available',
         desc: 'Accounting + invoicing',
         aiLine: 'Commission invoices raised automatically at settlement',
         flow: {
@@ -329,7 +329,7 @@ const CATEGORIES: Category[] = [
     ],
     integrations: [
       {
-        id: 'docusign', name: 'DocuSign', short: 'DocuSign', color: '#ffb03a', status: 'connected',
+        id: 'docusign', name: 'DocuSign', short: 'DocuSign', color: '#ffb03a', status: 'available',
         desc: 'eSignatures · contracts',
         aiLine: 'Sale contracts generated and sent on offer acceptance',
         flow: {
