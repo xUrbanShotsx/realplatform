@@ -2,6 +2,7 @@
 import { useState, Suspense, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useSearchParams, useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
 import {
   LayoutDashboard, Users, TrendingUp, Megaphone, Shield, Building2, Users2, Brain,
   Settings, Bell, Search, ChevronRight, ChevronLeft, Plus, Send, ChevronDown, Sparkles,
@@ -657,6 +658,15 @@ function ChatInterface({ chats, activeChatId, onSend, onNew }: {
 function SidebarShell({ mode, setMode, children }: {
   mode: 'platform' | 'ai'; setMode: (m: 'platform' | 'ai') => void; children: React.ReactNode
 }) {
+  const router = useRouter()
+
+  const handleSignOut = async () => {
+    const supabase = createClient()
+    await supabase.auth.signOut()
+    router.push('/login/real-estate')
+    router.refresh()
+  }
+
   return (
     <div style={{ width: 220, flexShrink: 0, background: SIDE, borderRight: `1px solid ${BORDER}`, display: 'flex', flexDirection: 'column', height: '100dvh', overflow: 'hidden' }}>
       {/* Logo */}
@@ -707,7 +717,7 @@ function SidebarShell({ mode, setMode, children }: {
           <div style={{ fontSize: 10, color: TEXT3, marginTop: 2 }}>Principal Agent</div>
         </div>
         <Link href="/dashboard/settings" style={{ color: TEXT3, textDecoration: 'none' }}><Settings size={14} strokeWidth={1.5} /></Link>
-        <a href="/index.html" style={{ color: TEXT3, textDecoration: 'none', display: 'flex' }}><LogOut size={14} strokeWidth={1.5} /></a>
+        <button onClick={handleSignOut} style={{ color: TEXT3, background: 'none', border: 'none', cursor: 'pointer', display: 'flex', padding: 0 }}><LogOut size={14} strokeWidth={1.5} /></button>
       </div>
     </div>
   )

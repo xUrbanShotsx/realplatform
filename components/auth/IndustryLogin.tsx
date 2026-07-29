@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowRight, ArrowLeft, CheckCircle2 } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
 
 export interface IndustryLoginConfig {
   label: string
@@ -25,10 +26,30 @@ export function IndustryLogin({
   const [password, setPassword] = useState('')
   const [focused, setFocused]   = useState('')
   const [loading, setLoading]   = useState(false)
+  const [error, setError]       = useState('')
+  const [resetSent, setResetSent] = useState(false)
 
-  const handleSignIn = () => {
+  const handleSignIn = async () => {
+    if (!email || !password) { setError('Please enter your email and password.'); return }
+    setError('')
     setLoading(true)
-    setTimeout(() => router.push(dashboard), 600)
+    const supabase = createClient()
+    const { error: err } = await supabase.auth.signInWithPassword({ email, password })
+    setLoading(false)
+    if (err) { setError(err.message); return }
+    router.push(dashboard)
+    router.refresh()
+  }
+
+  const handleForgotPassword = async () => {
+    if (!email) { setError('Enter your email address above first.'); return }
+    setError('')
+    const supabase = createClient()
+    const { error: err } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/auth/reset-password`,
+    })
+    if (err) { setError(err.message); return }
+    setResetSent(true)
   }
 
   const inputStyle = (name: string): React.CSSProperties => ({
@@ -154,8 +175,8 @@ export function IndustryLogin({
                 <label style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.07em', textTransform: 'uppercase', color: '#64748b' }}>
                   Password
                 </label>
-                <button style={{ fontSize: 11, color: '#9ca3af', background: 'none', border: 'none', cursor: 'pointer' }}>
-                  Forgot password?
+                <button onClick={handleForgotPassword} style={{ fontSize: 11, color: '#9ca3af', background: 'none', border: 'none', cursor: 'pointer' }}>
+                  {resetSent ? '✓ Reset email sent' : 'Forgot password?'}
                 </button>
               </div>
               <input type="password" placeholder="••••••••"
@@ -164,6 +185,13 @@ export function IndustryLogin({
                 style={inputStyle('password')} />
             </div>
           </div>
+
+          {/* Error message */}
+          {error && (
+            <p style={{ marginTop: 16, fontSize: 12, color: '#ef4444', background: '#fef2f2', border: '1px solid #fecaca', padding: '10px 14px', borderRadius: 6 }}>
+              {error}
+            </p>
+          )}
 
           {/* Sign in button */}
           <button onClick={handleSignIn} disabled={loading}
