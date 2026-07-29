@@ -17,6 +17,7 @@
     "@radix-ui/react-separator": "^1.1.0",
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-tabs": "^1.1.0",
+    "@stripe/stripe-js": "^9.12.1",
     "@supabase/ssr": "^0.12.4",
     "@supabase/supabase-js": "^2.111.0",
     "class-variance-authority": "^0.7.0",
@@ -26,6 +27,7 @@
     "react": "^18",
     "react-dom": "^18",
     "recharts": "^2.12.7",
+    "stripe": "^22.3.2",
     "tailwind-merge": "^2.3.0"
   },
   "devDependencies": {
