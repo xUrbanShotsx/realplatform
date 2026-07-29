@@ -2,8 +2,9 @@ import { NextResponse, type NextRequest } from 'next/server'
 import Stripe from 'stripe'
 
 const PRICE_MAP: Record<string, string | undefined> = {
-  starter: process.env.STRIPE_PRICE_STARTER,
-  pro:     process.env.STRIPE_PRICE_PRO,
+  small:  process.env.STRIPE_PRICE_SMALL,
+  medium: process.env.STRIPE_PRICE_MEDIUM,
+  large:  process.env.STRIPE_PRICE_LARGE,
 }
 
 export async function POST(request: NextRequest) {
@@ -17,7 +18,7 @@ export async function POST(request: NextRequest) {
     const { plan, userId, email, firstName, lastName, phone, agencyName, state } = body
 
     const priceId = PRICE_MAP[plan as string]
-    if (!priceId || priceId === 'price_REPLACE_ME') {
+    if (!priceId || priceId.startsWith('price_REPLACE')) {
       return NextResponse.json({ error: 'Stripe price not configured' }, { status: 200 })
     }
 

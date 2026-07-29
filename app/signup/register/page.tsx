@@ -12,8 +12,9 @@ const INK = '#64748b'
 const F = `system-ui, -apple-system, 'Segoe UI', Arial, sans-serif`
 
 const PLAN_INFO: Record<string, { label: string; price: string; trial: string }> = {
-  starter: { label: 'Starter', price: '$149/mo', trial: '14-day free trial' },
-  pro:     { label: 'Pro',     price: '$349/mo', trial: '14-day free trial' },
+  small:  { label: 'Small',  price: 'A$349/mo', trial: '14-day free trial' },
+  medium: { label: 'Medium', price: 'A$449/mo', trial: '14-day free trial' },
+  large:  { label: 'Large',  price: 'A$549/mo', trial: '14-day free trial' },
 }
 
 const AU_STATES = ['NSW', 'VIC', 'QLD', 'SA', 'WA', 'TAS', 'ACT', 'NT']
@@ -89,8 +90,8 @@ function Steps({ current, total }: { current: number; total: number }) {
 function RegisterForm() {
   const params = useSearchParams()
   const router = useRouter()
-  const plan = params.get('plan') ?? 'pro'
-  const planInfo = PLAN_INFO[plan] ?? PLAN_INFO['pro']
+  const plan = params.get('plan') ?? 'medium'
+  const planInfo = PLAN_INFO[plan] ?? PLAN_INFO['medium']
 
   const [step, setStep] = useState(0)
   const [error, setError] = useState('')

@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { Check, ArrowRight, Zap, Building2, Phone } from 'lucide-react'
+import { Check, ArrowRight, Phone } from 'lucide-react'
 
 const ACCENT = '#4361ee'
 const ACCENT_LIGHT = '#4361ee18'
@@ -12,8 +12,8 @@ const F = `system-ui, -apple-system, 'Segoe UI', Arial, sans-serif`
 
 const plans = [
   {
-    name: 'Starter',
-    price: '$149',
+    name: 'Small',
+    price: 'A$349',
     period: '/mo',
     tagline: 'Perfect for solo agents and small boutique agencies.',
     hi: false,
@@ -30,15 +30,15 @@ const plans = [
     ],
   },
   {
-    name: 'Pro',
-    price: '$349',
+    name: 'Medium',
+    price: 'A$449',
     period: '/mo',
     tagline: 'The full platform for growing real estate agencies.',
     hi: true,
     badge: 'Most Popular',
     features: [
-      'Up to 25 users',
-      'Everything in Starter',
+      'Up to 15 users',
+      'Everything in Small',
       'Property management module',
       'Trust accounting',
       'Licence & CPD register',
@@ -49,21 +49,21 @@ const plans = [
     ],
   },
   {
-    name: 'Enterprise',
-    price: 'Custom',
-    period: '',
-    tagline: 'For large agencies, groups, and franchise networks.',
+    name: 'Large',
+    price: 'A$549',
+    period: '/mo',
+    tagline: 'For large agencies, groups, and growing teams.',
     hi: false,
     badge: null,
     features: [
-      'Unlimited users & offices',
+      'Unlimited users',
+      'Everything in Medium',
       'Multi-office dashboard',
       'Custom integrations & API',
       'Dedicated account manager',
-      'White-label options',
-      'SLA guarantee',
-      'On-site onboarding',
       'Advanced analytics & reporting',
+      'SLA guarantee',
+      'On-site onboarding & training',
     ],
   },
 ]
@@ -214,35 +214,21 @@ export default function SignupPage() {
           </div>
 
           <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-            {selected === 'Enterprise' ? (
-              <a href="mailto:hello@realplatform.com.au" style={{
+            <Link
+              href={selected ? `/signup/register?plan=${selected.toLowerCase()}` : '#'}
+              style={{
                 display: 'flex', alignItems: 'center', gap: 8,
                 padding: '13px 28px', fontSize: 12, fontWeight: 700,
-                background: ACCENT, color: '#fff', borderRadius: 8,
-                textDecoration: 'none', transition: 'opacity .2s',
+                background: selected ? ACCENT : '#e2e8f0',
+                color: selected ? '#fff' : '#94a3b8',
+                borderRadius: 8, textDecoration: 'none', transition: 'opacity .2s',
+                pointerEvents: selected ? 'auto' : 'none',
               }}
-                onMouseEnter={e => ((e.currentTarget as HTMLElement).style.opacity = '0.88')}
-                onMouseLeave={e => ((e.currentTarget as HTMLElement).style.opacity = '1')}
-              >
-                <Phone size={13} /> Contact Sales
-              </a>
-            ) : (
-              <Link
-                href={selected ? `/signup/register?plan=${selected.toLowerCase()}` : '#'}
-                style={{
-                  display: 'flex', alignItems: 'center', gap: 8,
-                  padding: '13px 28px', fontSize: 12, fontWeight: 700,
-                  background: selected ? ACCENT : '#e2e8f0',
-                  color: selected ? '#fff' : '#94a3b8',
-                  borderRadius: 8, textDecoration: 'none', transition: 'opacity .2s',
-                  pointerEvents: selected ? 'auto' : 'none',
-                }}
-                onMouseEnter={e => { if (selected) (e.currentTarget as HTMLElement).style.opacity = '0.88' }}
-                onMouseLeave={e => ((e.currentTarget as HTMLElement).style.opacity = '1')}
-              >
-                Get started with {selected ?? 'a plan'} <ArrowRight size={13} />
-              </Link>
-            )}
+              onMouseEnter={e => { if (selected) (e.currentTarget as HTMLElement).style.opacity = '0.88' }}
+              onMouseLeave={e => ((e.currentTarget as HTMLElement).style.opacity = '1')}
+            >
+              Get started with {selected ?? 'a plan'} <ArrowRight size={13} />
+            </Link>
           </div>
         </div>
       </div>
