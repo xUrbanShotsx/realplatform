@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Alert 
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
 import { Feather } from '@expo/vector-icons'
+import { supabase } from '../lib/supabase'
 
 const BLUE  = '#3B6BF7'
 const TEXT  = '#0f172a'
@@ -36,6 +37,19 @@ export default function ProfileScreen() {
 
   const handleSave = () => {
     Alert.alert('Profile Updated', 'Your profile has been saved.', [{ text: 'OK' }])
+  }
+
+  const handleSignOut = () => {
+    Alert.alert('Sign Out', 'Are you sure you want to sign out?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Sign Out', style: 'destructive',
+        onPress: async () => {
+          await supabase.auth.signOut()
+          router.replace('/login')
+        },
+      },
+    ])
   }
 
   return (
@@ -97,6 +111,11 @@ export default function ProfileScreen() {
         <TouchableOpacity style={s.saveFullBtn} onPress={handleSave} activeOpacity={0.85}>
           <Text style={s.saveFullTxt}>Save Profile</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity style={s.signOutBtn} onPress={handleSignOut} activeOpacity={0.75}>
+          <Feather name="log-out" size={16} color="#ef4444" />
+          <Text style={s.signOutTxt}>Sign Out</Text>
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   )
@@ -123,4 +142,6 @@ const s = StyleSheet.create({
   bioInput: { fontSize: 14, color: TEXT, minHeight: 80, textAlignVertical: 'top' },
   saveFullBtn: { marginHorizontal: 16, marginTop: 24, backgroundColor: BLUE, borderRadius: 14, paddingVertical: 16, alignItems: 'center' },
   saveFullTxt: { fontSize: 16, fontWeight: '700', color: '#fff' },
+  signOutBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, marginHorizontal: 16, marginTop: 12, paddingVertical: 16, borderRadius: 14, backgroundColor: '#fef2f2', borderWidth: 1, borderColor: '#fecaca' },
+  signOutTxt: { fontSize: 15, fontWeight: '600', color: '#ef4444' },
 })

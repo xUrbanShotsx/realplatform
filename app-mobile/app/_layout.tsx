@@ -1,11 +1,26 @@
-import { Stack } from 'expo-router'
+import { useEffect } from 'react'
+import { Stack, router } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
+import { supabase } from '../lib/supabase'
 
 export default function RootLayout() {
+  useEffect(() => {
+    // Check initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) router.replace('/login')
+    })
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!session) router.replace('/login')
+    })
+    return () => subscription.unsubscribe()
+  }, [])
+
   return (
     <>
       <StatusBar style="dark" />
       <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="login" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="property/[id]" options={{ headerShown: false }} />
         <Stack.Screen name="sign-in/[id]" options={{ headerShown: true, title: 'Sign In', headerBackTitle: 'Back', headerStyle: { backgroundColor: '#ffffff' }, headerTintColor: '#0f172a', headerTitleStyle: { fontWeight: '700' }, headerShadowVisible: false }} />
