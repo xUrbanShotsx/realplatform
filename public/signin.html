@@ -264,57 +264,8 @@ input:focus{
 </main>
 
 <script>
-const DASHBOARD_URL = 'http://localhost:3000/dashboard';
-
-// Demo credentials — any email + password "demo" signs in
-const DEMO_PASSWORD = 'demo';
-
-const form       = document.getElementById('signinForm');
-const submitBtn  = document.getElementById('submitBtn');
-const errorMsg   = document.getElementById('errorMsg');
-const emailInput = document.getElementById('email');
-const passInput  = document.getElementById('password');
-
-form.addEventListener('submit', function(e) {
-  e.preventDefault();
-  errorMsg.classList.remove('visible');
-
-  const email = emailInput.value.trim();
-  const pass  = passInput.value;
-
-  if (!email || !pass) return;
-
-  // Loading state
-  submitBtn.classList.add('loading');
-  submitBtn.disabled = true;
-
-  setTimeout(function() {
-    // Accept: demo password OR any non-empty credentials
-    // In production this would hit an API
-    if (pass === DEMO_PASSWORD || pass.length >= 1) {
-      // Success — redirect to dashboard
-      window.location.href = DASHBOARD_URL;
-    } else {
-      submitBtn.classList.remove('loading');
-      submitBtn.disabled = false;
-      errorMsg.classList.add('visible');
-      passInput.value = '';
-      passInput.focus();
-    }
-  }, 900);
-});
-
-function handleSSO() {
-  submitBtn.disabled = true;
-  window.location.href = DASHBOARD_URL;
-}
-
-// Clear error on input
-[emailInput, passInput].forEach(function(el) {
-  el.addEventListener('input', function() {
-    errorMsg.classList.remove('visible');
-  });
-});
+// Redirect to the real Next.js login page
+window.location.replace('/login/real-estate');
 </script>
 </body>
 </html>
