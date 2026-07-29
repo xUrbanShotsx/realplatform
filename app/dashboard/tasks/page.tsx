@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -8,10 +8,10 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { StatusBadge } from '@/components/shared/StatusBadge'
 import { PageHeader } from '@/components/shared/PageHeader'
 import { Drawer, Field, TextInput, Select, RadioGroup, SubmitRow } from '@/components/ui/Drawer'
-import { tasks } from '@/lib/mock-data'
 import { taskXP, userProfile, dailyChallenges } from '@/lib/gamification'
 import { formatDate } from '@/lib/utils'
 import { Plus, Search, Flame, Target, Zap } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
 
 const priorityDot: Record<string, string> = {
   high: 'bg-red-400',
@@ -54,34 +54,96 @@ type Task = {
 
 const FORM_DEFAULT = { title: '', category: '', assignedTo: '', dueDate: '', priority: 'medium' as Task['priority'] }
 
+function computeUiStatus(row: Record<string, unknown>): Task['status'] {
+  if (row.status === 'done' || row.status === 'cancelled') return 'completed'
+  if (!row.due_date) return 'upcoming'
+  const now = new Date()
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  const due = new Date(row.due_date as string)
+  const dueDay = new Date(due.getFullYear(), due.getMonth(), due.getDate())
+  if (dueDay < today) return 'overdue'
+  if (dueDay.getTime() === today.getTime()) return 'due-today'
+  return 'upcoming'
+}
+
+function mapDbTask(row: Record<string, unknown>): Task {
+  const meta = ((row.metadata ?? {}) as { category?: string; assignedTo?: string })
+  const priority = (['high','medium','low'] as const).includes(row.priority as 'high'|'medium'|'low')
+    ? (row.priority as Task['priority']) : 'medium'
+  return {
+    id: row.id as string,
+    title: row.title as string,
+    assignedTo: meta.assignedTo ?? '',
+    dueDate: row.due_date ? (row.due_date as string).split('T')[0] : '',
+    priority,
+    status: computeUiStatus(row),
+    category: meta.category ?? 'General',
+    notes: (row.description as string) ?? '',
+  }
+}
+
 export default function TasksPage() {
   const [search, setSearch] = useState('')
-  const [items, setItems] = useState<Task[]>([...tasks] as Task[])
+  const [items, setItems] = useState<Task[]>([])
+  const [orgId, setOrgId]   = useState<string | null>(null)
   const [showDrawer, setShowDrawer] = useState(false)
   const [form, setForm] = useState(FORM_DEFAULT)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [xpFlash, setXpFlash] = useState<{ id: string; xp: number } | null>(null)
 
-  function handleSubmit(e: React.FormEvent) {
+  const loadTasks = useCallback(async (oid: string) => {
+    const supabase = createClient()
+    const { data } = await supabase
+      .from('tasks')
+      .select('*')
+      .eq('org_id', oid)
+      .order('due_date', { ascending: true, nullsFirst: false })
+    setItems((data ?? []).map(mapDbTask))
+  }, [])
+
+  useEffect(() => {
+    const supabase = createClient()
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
+      if (!user) return
+      const { data: profile } = await supabase.from('user_profiles').select('org_id').eq('user_id', user.id).single()
+      if (!profile?.org_id) return
+      setOrgId(profile.org_id)
+      await loadTasks(profile.org_id)
+    })
+  }, [])
+
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    if (!orgId || !form.title.trim()) return
     setSaving(true)
-    setTimeout(() => {
-      setItems(prev => [{ id: Date.now().toString(), ...form, status: 'upcoming' as const, notes: '' }, ...prev])
-      setSaving(false)
-      setSaved(true)
-      setTimeout(() => {
-        setSaved(false)
-        setShowDrawer(false)
-        setForm(FORM_DEFAULT)
-      }, 1200)
-    }, 700)
+    const supabase = createClient()
+    await supabase.from('tasks').insert({
+      org_id: orgId,
+      title: form.title.trim(),
+      priority: form.priority,
+      due_date: form.dueDate || null,
+      metadata: {
+        category: form.category || 'General',
+        assignedTo: form.assignedTo.trim() || null,
+      },
+    })
+    setSaving(false)
+    setSaved(true)
+    setTimeout(async () => {
+      setSaved(false)
+      setShowDrawer(false)
+      setForm(FORM_DEFAULT)
+      if (orgId) await loadTasks(orgId)
+    }, 1000)
   }
 
-  function markComplete(id: string) {
+  async function markComplete(id: string) {
     const task = items.find(t => t.id === id)
     if (!task || task.status === 'completed') return
     const xp = getTaskXP(task.priority, task.status)
+    const supabase = createClient()
+    await supabase.from('tasks').update({ status: 'done', completed_at: new Date().toISOString() }).eq('id', id)
     setItems(prev => prev.map(t => t.id === id ? { ...t, status: 'completed' as const } : t))
     setXpFlash({ id, xp })
     setTimeout(() => setXpFlash(null), 1500)

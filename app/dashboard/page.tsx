@@ -1,7 +1,9 @@
 'use client'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Brain, Zap, TrendingUp, Home, Phone, Mail, Bell, Sparkles, ChevronRight, CheckCircle2, Lock } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
 
 const BG      = '#f8fafc'
 const CARD    = '#ffffff'
@@ -21,11 +23,11 @@ const AV = ['#4361ee','#8b5cf6','#06b6d4','#10b981','#ef4444','#e3008c','#f59e0b
 const avColor = (n: string) => AV[n.charCodeAt(0) % AV.length]
 const initials = (n: string) => { const p = n.split(' '); return p.length >= 2 ? p[0][0]+p[p.length-1][0] : n.slice(0,2) }
 
-const KPIS = [
-  { label: 'MTD GCI',        value: '$58.4K',    change: '+12% vs last month', color: GREEN  },
-  { label: 'Pipeline Value', value: '$177.3M',   change: '+$8.2M this week',   color: BLUE   },
-  { label: 'Active Listings',value: '8',         change: '+2 this week',        color: AMBER  },
-  { label: 'Urgent Today',   value: '5',         change: 'Actions required',    color: RED    },
+const KPIS_DEFAULT = [
+  { label: 'Total Contacts',  value: '—', change: 'Your CRM',         color: GREEN },
+  { label: 'Active Listings', value: '—', change: 'Current listings', color: BLUE  },
+  { label: 'Tasks Due',       value: '—', change: 'Today & overdue',  color: AMBER },
+  { label: 'Urgent Today',    value: '—', change: 'Actions required', color: RED   },
 ]
 
 const PRIORITIES = [
@@ -63,12 +65,47 @@ const CTA_ROUTES: Record<string, string> = {
 
 export default function HomePage() {
   const router = useRouter()
+  const [kpis, setKpis] = useState(KPIS_DEFAULT)
+  const [firstName, setFirstName] = useState('there')
+
+  useEffect(() => {
+    const supabase = createClient()
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
+      if (!user) return
+      const { data: profile } = await supabase
+        .from('user_profiles')
+        .select('org_id, first_name')
+        .eq('user_id', user.id)
+        .single()
+      if (!profile?.org_id) return
+      if (profile.first_name) setFirstName(profile.first_name)
+
+      const today = new Date(); today.setHours(0,0,0,0)
+      const todayIso = today.toISOString()
+
+      const [{ count: contacts }, { count: listings }, { count: tasks }] = await Promise.all([
+        supabase.from('contacts').select('*', { count: 'exact', head: true }).eq('org_id', profile.org_id),
+        supabase.from('listings').select('*', { count: 'exact', head: true }).eq('org_id', profile.org_id).eq('status', 'active'),
+        supabase.from('tasks').select('*', { count: 'exact', head: true }).eq('org_id', profile.org_id).lte('due_date', new Date().toISOString()).neq('status', 'done').neq('status', 'cancelled'),
+      ])
+
+      setKpis([
+        { label: 'Total Contacts',  value: String(contacts ?? 0), change: 'Your CRM',         color: GREEN },
+        { label: 'Active Listings', value: String(listings ?? 0), change: 'Current listings', color: BLUE  },
+        { label: 'Tasks Due',       value: String(tasks ?? 0),    change: 'Today & overdue',  color: AMBER },
+        { label: 'Urgent Today',    value: String((tasks ?? 0) > 0 ? tasks : 0), change: 'Actions required', color: RED },
+      ])
+    })
+  }, [])
+
+  const PRIORITIES_COUNT = PRIORITIES.length
+
   return (
     <div style={{ height: '100%', overflowY: 'auto', background: BG, padding: 20, fontFamily: 'var(--font-jakarta), system-ui, sans-serif' }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 18 }}>
         <div>
-          <div style={{ fontSize: 22, fontWeight: 800, color: TEXT, letterSpacing: '-0.04em', lineHeight: 1, marginBottom: 4 }}>Good morning, Jye.</div>
+          <div style={{ fontSize: 22, fontWeight: 800, color: TEXT, letterSpacing: '-0.04em', lineHeight: 1, marginBottom: 4 }}>Good morning, {firstName}.</div>
           <div style={{ fontSize: 13, color: TEXT3 }}>Sunday 26 July 2026 · 5 actions need your attention today</div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px', background: PINK_S, border: `1px solid rgba(227,0,140,0.2)`, borderRadius: 9999 }}>
@@ -105,7 +142,7 @@ export default function HomePage() {
 
       {/* KPI row */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, marginBottom: 18 }}>
-        {KPIS.map(k => (
+        {kpis.map(k => (
           <div key={k.label} style={{ background: CARD, border: `1px solid ${BORDER}`, padding: 14, borderRadius: 10 }}>
             <div style={{ fontSize: 22, fontWeight: 800, color: k.color, letterSpacing: '-0.04em', lineHeight: 1, marginBottom: 4 }}>{k.value}</div>
             <div style={{ fontSize: 11, color: TEXT3, fontWeight: 700, letterSpacing: '0.04em' }}>{k.label}</div>
@@ -145,7 +182,7 @@ export default function HomePage() {
             <div style={{ padding: '12px 16px', borderBottom: `1px solid ${BORDER}`, display: 'flex', alignItems: 'center', gap: 8 }}>
               <Zap size={13} color={AMBER} />
               <span style={{ fontSize: 12, fontWeight: 700, color: TEXT }}>Today's Priorities</span>
-              <span style={{ marginLeft: 'auto', fontSize: 10, color: TEXT3 }}>{PRIORITIES.length} actions</span>
+              <span style={{ marginLeft: 'auto', fontSize: 10, color: TEXT3 }}>{PRIORITIES_COUNT} actions</span>
             </div>
             {PRIORITIES.map((p, i) => (
               <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 16px', borderBottom: i < PRIORITIES.length - 1 ? `1px solid ${BORDER2}` : 'none' }}>
