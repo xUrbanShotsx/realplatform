@@ -13,13 +13,14 @@ const F = `system-ui, -apple-system, 'Segoe UI', Arial, sans-serif`
 const plans = [
   {
     name: 'Small',
-    price: 'A$349',
+    price: 'A$399',
     period: '/mo',
     tagline: 'Perfect for solo agents and small boutique agencies.',
     hi: false,
     badge: null,
+    enterprise: false,
     features: [
-      'Up to 5 users',
+      'Up to 10 users',
       'Contacts & leads CRM',
       'Listings management',
       'Open home check-in (mobile)',
@@ -31,13 +32,14 @@ const plans = [
   },
   {
     name: 'Medium',
-    price: 'A$449',
+    price: 'A$549',
     period: '/mo',
     tagline: 'The full platform for growing real estate agencies.',
     hi: true,
     badge: 'Most Popular',
+    enterprise: false,
     features: [
-      'Up to 15 users',
+      'Up to 30 users',
       'Everything in Small',
       'Property management module',
       'Trust accounting',
@@ -50,26 +52,46 @@ const plans = [
   },
   {
     name: 'Large',
-    price: 'A$549',
+    price: 'A$699',
     period: '/mo',
     tagline: 'For large agencies, groups, and growing teams.',
     hi: false,
     badge: null,
+    enterprise: false,
     features: [
-      'Unlimited users',
+      'Up to 60 users',
       'Everything in Medium',
       'Multi-office dashboard',
       'Custom integrations & API',
-      'Dedicated account manager',
       'Advanced analytics & reporting',
+      'Dedicated onboarding session',
+      'Priority phone & chat support',
       'SLA guarantee',
+    ],
+  },
+  {
+    name: 'Enterprise',
+    price: 'Custom',
+    period: '',
+    tagline: 'For groups, franchises, and networks over 60 people.',
+    hi: false,
+    badge: null,
+    enterprise: true,
+    features: [
+      'Unlimited users',
+      'Everything in Large',
+      'Dedicated account manager',
+      'Custom contract & invoicing',
+      'White-label options',
       'On-site onboarding & training',
+      'Custom API integrations',
+      'Bespoke reporting',
     ],
   },
 ]
 
 export default function SignupPage() {
-  const [selected, setSelected] = useState<string | null>('Pro')
+  const [selected, setSelected] = useState<string | null>('Medium')
 
   return (
     <div style={{ minHeight: '100vh', background: '#f8fafc', fontFamily: F }}>
@@ -204,9 +226,11 @@ export default function SignupPage() {
               <p style={{ fontSize: 13, color: INK }}>
                 Selected: <span style={{ color: '#0f172a', fontWeight: 700 }}>{selected}</span>
                 {selected !== 'Enterprise' && (
-                  <span style={{ color: INK }}> — {plans.find(p => p.name === selected)?.price}/mo</span>
+                  <>
+                    <span style={{ color: INK }}> — {plans.find(p => p.name === selected)?.price}/mo</span>
+                    <span style={{ color: '#22c55e', fontWeight: 600 }}> · 14-day free trial</span>
+                  </>
                 )}
-                <span style={{ color: '#22c55e', fontWeight: 600 }}> · 14-day free trial</span>
               </p>
             ) : (
               <p style={{ fontSize: 13, color: INK }}>Select a plan to continue</p>
@@ -214,21 +238,36 @@ export default function SignupPage() {
           </div>
 
           <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-            <Link
-              href={selected ? `/signup/register?plan=${selected.toLowerCase()}` : '#'}
-              style={{
-                display: 'flex', alignItems: 'center', gap: 8,
-                padding: '13px 28px', fontSize: 12, fontWeight: 700,
-                background: selected ? ACCENT : '#e2e8f0',
-                color: selected ? '#fff' : '#94a3b8',
-                borderRadius: 8, textDecoration: 'none', transition: 'opacity .2s',
-                pointerEvents: selected ? 'auto' : 'none',
-              }}
-              onMouseEnter={e => { if (selected) (e.currentTarget as HTMLElement).style.opacity = '0.88' }}
-              onMouseLeave={e => ((e.currentTarget as HTMLElement).style.opacity = '1')}
-            >
-              Get started with {selected ?? 'a plan'} <ArrowRight size={13} />
-            </Link>
+            {selected === 'Enterprise' ? (
+              <a href="mailto:hello@realplatform.com.au"
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 8,
+                  padding: '13px 28px', fontSize: 12, fontWeight: 700,
+                  background: ACCENT, color: '#fff',
+                  borderRadius: 8, textDecoration: 'none', transition: 'opacity .2s',
+                }}
+                onMouseEnter={e => ((e.currentTarget as HTMLElement).style.opacity = '0.88')}
+                onMouseLeave={e => ((e.currentTarget as HTMLElement).style.opacity = '1')}
+              >
+                <Phone size={13} /> Contact us
+              </a>
+            ) : (
+              <Link
+                href={selected ? `/signup/register?plan=${selected.toLowerCase()}` : '#'}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 8,
+                  padding: '13px 28px', fontSize: 12, fontWeight: 700,
+                  background: selected ? ACCENT : '#e2e8f0',
+                  color: selected ? '#fff' : '#94a3b8',
+                  borderRadius: 8, textDecoration: 'none', transition: 'opacity .2s',
+                  pointerEvents: selected ? 'auto' : 'none',
+                }}
+                onMouseEnter={e => { if (selected) (e.currentTarget as HTMLElement).style.opacity = '0.88' }}
+                onMouseLeave={e => ((e.currentTarget as HTMLElement).style.opacity = '1')}
+              >
+                Get started with {selected ?? 'a plan'} <ArrowRight size={13} />
+              </Link>
+            )}
           </div>
         </div>
       </div>

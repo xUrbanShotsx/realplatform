@@ -12,9 +12,9 @@ const INK = '#64748b'
 const F = `system-ui, -apple-system, 'Segoe UI', Arial, sans-serif`
 
 const PLAN_INFO: Record<string, { label: string; price: string; trial: string }> = {
-  small:  { label: 'Small',  price: 'A$349/mo', trial: '14-day free trial' },
-  medium: { label: 'Medium', price: 'A$449/mo', trial: '14-day free trial' },
-  large:  { label: 'Large',  price: 'A$549/mo', trial: '14-day free trial' },
+  small:  { label: 'Small',  price: 'A$399/mo', trial: '14-day free trial' },
+  medium: { label: 'Medium', price: 'A$549/mo', trial: '14-day free trial' },
+  large:  { label: 'Large',  price: 'A$699/mo', trial: '14-day free trial' },
 }
 
 const AU_STATES = ['NSW', 'VIC', 'QLD', 'SA', 'WA', 'TAS', 'ACT', 'NT']
